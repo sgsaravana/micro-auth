@@ -4,5 +4,7 @@ NodeJS Microservice based on JWT for managing Authentication. Register with emai
 API
 
 POST /register
+
 POST /activate
+
 POST /forgot
