@@ -1,6 +1,6 @@
 'use strict'
 
-const values = require('../lib/constants.js');
+import values from '../lib/constants.js';
 
 const getErrorMessage = (code) => {
 

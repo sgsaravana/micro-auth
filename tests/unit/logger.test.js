@@ -1,6 +1,6 @@
 'use strict'
 
-const logger = require('../../modules/logger.module.js');
+import logger from '../../modules/logger.module.js';
 
 describe('Logger module', () => {
 

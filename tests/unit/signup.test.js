@@ -1,11 +1,16 @@
 'use strict'
 
-const signup = require('../../modules/signup.module.js');
-const logger = require('../../modules/logger.module.js');
+import signup from '../../modules/signup.module.js';
+import db from '../../modules/db.module.js';
 
 describe('Signup modules unit test', () => {
 
-  beforeEach(() => {});
+  beforeEach(() => {
+    db.doRegister = jest.fn().mockImplementation(async (params) => {
+      params.id = Math.floor(Math.random() * Math.floor(10000000));
+      return {success: true, user: params};
+    });
+  });
 
   describe('Register User', () => {
 
@@ -45,13 +50,31 @@ describe('Signup modules unit test', () => {
       done();
     });
 
-    test('Register User', async () => {
+    test('Register User will return user id', async () => {
       // Register a new user with given parameters
-      // const params = {};
-      // const result = await signup.register(params);
+      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com' };
+      const result = await signup.register(params);
 
-      // expect(result.user.id).toBe(true);
+      expect(result.success).toBe(true);
+      expect(result.user.id).not.toBe(null);
     });
+
+    test('Registered user will be inactive', async () => {
+      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com' };
+      const result = await signup.register(params);
+
+      expect(result.success).toBe(true);
+      expect(result.user.isActivated).toBe(false);
+    });
+
+    test('Registering user will return a uuid as confirmation string for activation', async () => {
+      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com' };
+      const result = await signup.register(params);
+
+      expect(result.success).toBe(true);
+      expect(result.user.activationCode.length).toBeGreaterThan(0);
+      expect(typeof result.user.activationCode).toBe(typeof 'string');
+    })
   })
 
 
