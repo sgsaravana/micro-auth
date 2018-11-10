@@ -2,7 +2,7 @@
 
 import logger from './logger.module.js';
 import config from '../lib/config.js';
-const model = require(`../database_adapter/${config.dbModule}.connect.js`);
+const model = require(`../database_adapter/${config.dbModule}.model.js`);
 
 let isReady = false;
 

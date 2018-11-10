@@ -2,7 +2,7 @@
 
 import db from '../../modules/db.module.js';
 // let db;
-const model = require('../../database_adapter/mysql.connect.js');
+const model = require('../../database_adapter/mysql.model.js');
 
 const registerParams = {
   firstname: 'Saravana',
