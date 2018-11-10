@@ -1,14 +1,7 @@
-
-const config = require('../lib/config.js');
+'use strict'
 
 var mysql = require('mysql');
-
-const host     = config.host;
-const port     = config.port;
-const user     = config.user;
-const password = config.password;
-const database = config.database;
-const pool     = config.pool;
+let config, host, port, user, password, database, pool;
 
 const checkConnection = async (connection) => {
   try {
@@ -45,26 +38,35 @@ const checkAndCreateDatabase = async () => {
 
 }
 
-const init = async () => {
+const init = async (conf) => {
+  config   = conf;
+  host     = config.host;
+  port     = config.port;
+  user     = config.user;
+  password = config.password;
+  database = config.database;
+  pool     = config.pool;
+
   const checkDatabase = await checkAndCreateDatabase();
 
   if (!checkDatabase || !checkDatabase.success) {
     console.log("Error creating database! ", checkDatabase.error);
-    return;
+    return { success: false };
   }
 
   try {
-    const pool = await mysql.createPool({
+    const connectionPool = await mysql.createPool({
       connectionLimit: pool,
       host:            host,
       user:            user,
       password:        password,
       database:        database
     });
-    return { success: true, database: pool };
+    return { success: true, database: connectionPool };
   }
   catch (err) {
-    throw err
+    console.log("Error creating pool: ", err);
+    return { success: false };
   }
 };
 

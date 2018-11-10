@@ -1,21 +1,25 @@
+'use strict'
 
 const adapter = require('./mysql.adapter.js');
-
 let pool;
 
-const checkConnection = async () => {
-  pool = await adapter.init();
-  console.log('pool: ', pool);
+const init = async (config) => {
+  try {
+    pool = await adapter.init(config);
+    console.log('pool: ', pool);
+    return pool.success;
+  }
+  catch (err) {
+    throw err;
+  }
 }
 
-// const register = () => {};
+const register = () => {};
 
 // const activate = () => {};
 
-checkConnection();
-
 module.exports = {
-  // checkConnection,
-  // register,
+  init,
+  register,
   // activate
 };

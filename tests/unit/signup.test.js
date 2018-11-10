@@ -7,6 +7,7 @@ import db from '../../modules/db.module.js';
 describe('Signup modules unit test', () => {
 
   beforeEach(() => {
+    db.init       = jest.fn().mockImplementation(async () => { return true; });
     db.doRegister = jest.fn().mockImplementation(async (params) => {
       params.id = Math.floor(Math.random() * Math.floor(10000000));
       return {success: true, user: params};

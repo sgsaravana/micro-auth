@@ -1,13 +1,13 @@
+'use strict'
 
 import mongoose from 'mongoose';
+let config, url, dbName;
 
-// const Schema = mongoose.Schema;
-const config = require('../lib/config.js');
+const init = async (conf) => {
+  config = conf;
+  url    = config.url;
+  dbName = config.dbName;
 
-const url    = config.url;
-const dbName = config.dbName;
-
-const init = async () => {
   console.log("url, dbName");
   console.log(url, dbName);
 
@@ -16,7 +16,7 @@ const init = async () => {
     return { success: true, database: db.Connection };
   }
   catch (err) {
-    return {success: false}
+    return { success: false }
   }
 
 }
