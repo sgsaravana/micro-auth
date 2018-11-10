@@ -8,14 +8,13 @@ const init = async (conf) => {
   url    = config.url;
   dbName = config.dbName;
 
-  console.log("url, dbName");
-  console.log(url, dbName);
-
   try {
     const db = await mongoose.connect(`${url}/${dbName}`);
+    console.log('=== connected to mongo ===');
     return { success: true, database: db.Connection };
   }
   catch (err) {
+    console.error('=== mongo connect error ===', err);
     return { success: false }
   }
 

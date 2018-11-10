@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "NODE_ENV=test DEBUG=micro-auth jest --verbose --coverage",
+    "test": "NODE_ENV=test DEBUG=micro-auth jest --verbose --coverage --forceExit --detectOpenHandles",
     "dev": "NODE_ENV=development DEBUG=micro-auth babel-node --presets es2015 index.js",
     "start": "NODE_ENV=production DEBUG=micro-auth babel-node --presets es2015 index.js",
     "build": "rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files"
