@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "NODE_ENV=test DEBUG=micro-auth jest",
+    "test": "NODE_ENV=test DEBUG=micro-auth jest --verbose --coverage",
     "dev": "NODE_ENV=development DEBUG=micro-auth babel-node --presets es2015 index.js",
     "start": "NODE_ENV=production DEBUG=micro-auth babel-node --presets es2015 index.js",
     "build": "rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files"
@@ -16,7 +16,7 @@
     "debug": "^4.1.0",
     "express": "^4.16.4",
     "jest": "^23.6.0",
-    "mongodb": "^3.1.9",
+    "mongoose": "^5.3.11",
     "mysql": "^2.16.0",
     "uuid": "^3.3.2",
     "validator": "^10.8.0"

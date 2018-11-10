@@ -2,6 +2,7 @@
 
 import signup from '../../modules/signup.module.js';
 import db from '../../modules/db.module.js';
+// const db = jest.genMockFromModule('../../modules/db.module.js');
 
 describe('Signup modules unit test', () => {
 

@@ -53,15 +53,19 @@ const init = async () => {
     return;
   }
 
-  const pool = mysql.createPool({
-    connectionLimit: pool,
-    host:            host,
-    user:            user,
-    password:        password,
-    database:        database
-  });
-
-  return pool;
+  try {
+    const pool = await mysql.createPool({
+      connectionLimit: pool,
+      host:            host,
+      user:            user,
+      password:        password,
+      database:        database
+    });
+    return { success: true, database: pool };
+  }
+  catch (err) {
+    throw err
+  }
 };
 
 module.exports = {
