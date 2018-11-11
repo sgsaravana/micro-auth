@@ -1,6 +1,9 @@
 'use strict'
 
 var mysql = require('mysql');
+
+import schema from './mysql.schema.js';
+
 let config, host, port, user, password, database, pool;
 
 const checkConnection = async (connection) => {
@@ -20,7 +23,6 @@ const checkConnection = async (connection) => {
 
 const checkAndCreateDatabase = async () => {
   let connection;
-
   connection = mysql.createConnection({
     host:     host,
     port:     port,
@@ -44,6 +46,22 @@ const checkAndCreateDatabase = async () => {
   });
 }
 
+const executeSchemaOperation = async (pool) => {
+  return new Promise(resolve => {
+    const query = schema.users();
+    const res = pool.query(query, (err, result) => {
+      if(err) {
+        console.error(err);
+        resolve({ success: false, error: err });
+      }
+      else {
+        resolve({ success: true });
+      }
+    });
+  })
+
+}
+
 const init = async (conf) => {
   config   = conf;
   host     = config.host;
@@ -60,8 +78,6 @@ const init = async (conf) => {
     return { success: false };
   }
 
-  // return new Promise(resolve => {
-  // });
   try {
     const connectionPool = mysql.createPool({
       connectionLimit: pool,
@@ -71,11 +87,20 @@ const init = async (conf) => {
       port:            port,
       database:        database
     });
-    return { success: true, database: connectionPool };
+
+    const checkSchema = await executeSchemaOperation(connectionPool);
+
+    if(checkSchema && !checkSchema.succes) {
+      return { success: true, database: connectionPool };
+    }
+    else {
+      return { succes: false }
+    }
+
   }
   catch (err) {
-    console.log("Error creating pool: ", err);
-    return { success: false };
+    console.error("Error creating pool: ", err);
+    return { success: false, error: err };
   }
 
 };
