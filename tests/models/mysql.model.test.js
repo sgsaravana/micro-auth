@@ -33,4 +33,24 @@ describe('Test MySQL Model', () => {
     done()
   });
 
+  test('register new user should return success', async done => {
+    done();
+  });
+
+  test('update user should update user particulars in table', async done => {
+    done();
+  });
+
+  test('update password with wrong current password should fail', async done => {
+    done();
+  });
+
+  test('check authentication should check for credentials', async done => {
+    done();
+  });
+
+  test('check wrong credentials should return false', async done => {
+    done();
+  });
+
 });

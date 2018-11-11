@@ -22,17 +22,11 @@ const init = async (config) => {
 
 // const update = () => {};
 
-// const activate = () => {};
-
-// const forgot = () => {};
-
-// const reset = () => {};
+// const authenticate = () => {};
 
 module.exports = {
   init,
   // register,
   // update,
   // activate,
-  // forgot,
-  // reset,
 };
