@@ -38,11 +38,18 @@ describe('Signup modules unit test', () => {
       expect(response3.error.code).toBe(202);
       expect(response3.error.message).toBe("Email is mandatory");
 
+      const params4 = { firstname: 'Saravana', lastname: 'B', email: "sgsaravana@gmail.com" };
+      const response4 = await signup.register(params4);
+
+      expect(response4.success).toBe(false);
+      expect(response4.error.code).toBe(203);
+      expect(response4.error.message).toBe("Password is mandatory");
+
       done()
     });
 
     test('validates email', async (done) => {
-      const params1 = { firstname: 'Saravana', email: 'wrongemail@fake' }
+      const params1 = { firstname: 'Saravana', email: 'wrongemail@fake', password: 'password' }
       const response1 = await signup.register(params1);
 
       expect(response1.success).toBe(false);
@@ -54,7 +61,7 @@ describe('Signup modules unit test', () => {
 
     test('Register User will return user id', async () => {
       // Register a new user with given parameters
-      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com' };
+      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com', password: 'password' };
       const result = await signup.register(params);
 
       expect(result.success).toBe(true);
@@ -62,7 +69,7 @@ describe('Signup modules unit test', () => {
     });
 
     test('Registered user will be inactive', async () => {
-      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com' };
+      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com', password: 'password' };
       const result = await signup.register(params);
 
       expect(result.success).toBe(true);
@@ -70,7 +77,7 @@ describe('Signup modules unit test', () => {
     });
 
     test('Registering user will return a uuid as confirmation string for activation', async () => {
-      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com' };
+      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com', password: 'password' };
       const result = await signup.register(params);
 
       expect(result.success).toBe(true);

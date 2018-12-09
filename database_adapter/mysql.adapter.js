@@ -10,11 +10,11 @@ const checkConnection = async (connection) => {
   return new Promise((resolve) => {
     connection.connect((err) => {
       if (err) {
-        // console.log('throwing ERROR !!!!');
+        console.log('throwing ERROR !!!!');
         resolve({ succes: false, error: err });
       }
       else {
-        // console.log('no error');
+        console.log('no error');
         resolve({ success: true });
       }
     });
@@ -32,11 +32,12 @@ const checkAndCreateDatabase = async () => {
 
   const result = await checkConnection(connection);
   if (result && !result.success) {
-    // console.log("Error with database check: ", port, result);
+    console.log("Error with database check: ", port, result);
     return { success: false };
   }
 
   return new Promise(resolve => {
+    console.log("Creating database...");
     connection.query(`CREATE DATABASE IF NOT EXISTS  ${database};`, (err) => {
       if(err) {
         resolve({ success: false, error: err });
