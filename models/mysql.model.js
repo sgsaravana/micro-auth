@@ -30,46 +30,48 @@ const checkConnection = async () => {
   }
 }
 
+const getUserByKey = async (field, value) => {
+  const con = await checkConnection();
+  if(!con) {
+    return { success: false, error: { code: 100, message: logger.getErrorMessage(100) } };
+  }
+
+  return new Promise(resolve => {
+    database.query('SELECT * FROM users WHERE ' + field + ' = ?', value, (err, result) => {
+      if(err) {
+        console.error(err);
+        resolve({ success: false, error: err });
+      }
+      else {
+        resolve({ success: true, user: result[0] });
+      }
+    })
+  });
+}
+
 const getUserByUUID = async (uuid) => {
-  const con = await checkConnection();
-  if(!con) {
-    return { success: false, error: { code: 100, message: logger.getErrorMessage(100) } };
-  }
+  return getUserByKey('uuid', uuid);
+  // const con = await checkConnection();
+  // if(!con) {
+  //   return { success: false, error: { code: 100, message: logger.getErrorMessage(100) } };
+  // }
 
-  return new Promise(resolve => {
-    database.query('SELECT * FROM users WHERE uuid = ?', uuid, (err, result) => {
-      if(err) {
-        console.error(err);
-        resolve({ success: false, error: err });
-      }
-      else {
-        resolve({ success: true, user: result[0] });
-      }
-    })
-  });
+  // return new Promise(resolve => {
+  //   database.query('SELECT * FROM users WHERE uuid = ?', uuid, (err, result) => {
+  //     if(err) {
+  //       console.error(err);
+  //       resolve({ success: false, error: err });
+  //     }
+  //     else {
+  //       resolve({ success: true, user: result[0] });
+  //     }
+  //   })
+  // });
 }
 
-const getUserByEmail = async email => {
-  const con = await checkConnection();
-  if(!con) {
-    return { success: false, error: { code: 100, message: logger.getErrorMessage(100) } };
-  }
-
-  return new Promise(resolve => {
-    database.query('SELECT * FROM users WHERE email = ?', email, (err, result) => {
-      if(err) {
-        console.error(err);
-        resolve({ success: false, error: err });
-      }
-      else {
-        resolve({ success: true, user: result[0] });
-      }
-    })
-  });
-}
 
 const checkEmailExistence = async (email) => {
-  const record = await getUserByEmail(email);
+  const record = await getUserByKey('email', email);
 
   return new Promise(resolve => {
     if (email) {
@@ -102,7 +104,7 @@ const register = async (params) => {
         }
         else {
           // const row = await getUserByUUID(params.uuid);
-          resolve(getUserByUUID(params.uuid));
+          resolve(getUserByKey('uuid' ,params.uuid));
         }
       });
     }
@@ -134,17 +136,35 @@ const update = async (uuid, params) => {
       else {
         console.log("results, fields");
         console.log(results, fields);
-        resolve(getUserByUUID(uuid));
+        resolve(getUserByKey('uuid' ,uuid));
       }
     });
   });
 };
 
-// const authenticate = () => {};
+const activate = async (code) => {
+  const record = await getUserByKey('activation_code', code);
+
+  return new Promise(resolve => {
+    if (record.success && record.user && record.user.activation_code == code) {
+      database.query('UPDATE users SET activated = ? WHERE uuid = ?', [true, record.user.uuid], (err, results, fields) => {
+        if (err) {
+          resolve({ success: false, error: { code: 301, message: logger.getErrorMessage(301) } });
+        }
+        else {
+          resolve(getUserByKey('activation_code', code));
+        }
+      })
+    }
+    else {
+      resolve({ success: false, error: { code: 300, message: logger.getErrorMessage(300) } });
+    }
+  })
+};
 
 module.exports = {
   init,
   register,
   update,
-  // activate,
+  activate,
 };

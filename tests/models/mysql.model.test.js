@@ -149,7 +149,33 @@ describe('Test MySQL Model Functions', () => {
     done();
   });
 
-  test('activate user should mark activation to true', async done => {
+  test('activate user should mark activation to true and wrong activation code will send error', async done => {
+    const uuid = uuidv1();
+    const user = {
+      firstname: 'John',
+      lastname: 'Williams',
+      email: 'jwilliam@gmail.com',
+      password: 'whoisthis',
+      activation_code: uuidv1(),
+      uuid: uuid
+    };
+
+    const result1 = await model.register(user);
+    expect(result1).not.toBe(undefined);
+    expect(result1.success).toBe(true);
+
+    const activationCode = result1.user.activation_code;
+
+    const errRes = await model.activate(uuidv1());
+    expect(errRes).not.toBe(undefined);
+    expect(errRes.success).toBe(false);
+    expect(errRes.error.code).toBe(300);
+
+    const result2 = await model.activate(activationCode);
+    expect(result2).not.toBe(undefined);
+    expect(result2.success).toBe(true);
+    expect(result2.user.uuid).toBe(uuid);
+    expect(result2.user.activated).toBe(1);
     done();
   });
 
