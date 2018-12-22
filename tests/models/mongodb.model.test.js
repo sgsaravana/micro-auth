@@ -6,7 +6,7 @@ import model from '../../models/mongodb.model.js';
  * @namespace config {object}
  */
 const config = {
-  url:    'mongodb://0.0.0.0:32775',
+  url:    'mongodb://0.0.0.0:27017',
   dbName: 'micro_auth_dev',
 }
 
@@ -22,7 +22,7 @@ describe('Test Mongodb Model', () => {
   });
 
   test('Init database should succeed', async (done) => {
-    config.url = 'mongodb://0.0.0.0:32775';
+    config.url = 'mongodb://0.0.0.0:27017';
     const res = await model.init(config);
 
     expect(res).toBe(true);

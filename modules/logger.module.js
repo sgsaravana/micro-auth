@@ -1,6 +1,6 @@
 'use strict'
 
-import values from '../lib/constants.js';
+import values from '../lib/constants.errors.js';
 
 const getErrorMessage = (code) => {
 

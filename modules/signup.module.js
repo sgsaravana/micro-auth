@@ -1,15 +1,19 @@
 'use strict'
 
 import validator from 'validator';
+const bcrypt = require('bcrypt');
 const uuidv1 = require('uuid/v1');
 
+import config from '../lib/config.js';
 import logger from './logger.module.js';
+import auth from './auth.module.js';
 import db from './db.module.js';
 
 const errCodeRef = {
   'firstname': 200,
   'lastname': 201,
   'email': 202,
+  'password': 203,
   'invalid_email': 210
 }
 
@@ -24,6 +28,11 @@ const validateParams = (params) => {
     return { code: c, message: logger.getErrorMessage(c) };
   }
 
+  if (!params.password || !params.password.length) {
+    const c = errCodeRef['password'];
+    return { code: c, message: logger.getErrorMessage(c) };
+  }
+
   if (params.email && params.email.length && !validator.isEmail(params.email)) {
     const c = errCodeRef['invalid_email'];
     return { code: c, message: logger.getErrorMessage(c) };
@@ -32,10 +41,18 @@ const validateParams = (params) => {
   return false;
 }
 
-const prepareParams = (params) => {
-  params.isActivated = false;
-  params.activationCode = uuidv1();
-  return params;
+const prepareParams = async params => {
+  const password = await auth.generatePassword(params.password);
+  return new Promise(resolve => {
+    params.isActivated = false;
+    params.activationCode = uuidv1();
+    params.password = password;
+    resolve(params);
+    // bcrypt.hash(params.password, config.saltRounds).then((err, hash) => {
+    //   params.password = hash;
+    //   resolve(params);
+    // });
+  });
 }
 
 // ===== PUBLIC FUNCTIONS =====
@@ -45,7 +62,7 @@ const register = async (params) => {
 
   if (!errors) {
     // No validation errors
-    return db.doRegister(prepareParams(params));
+    return db.doRegister(await prepareParams(params));
   }
   else {
     // Found validation errors, return error
@@ -53,6 +70,9 @@ const register = async (params) => {
   }
 }
 
+const activate = async (done) => {}
+
 module.exports = {
-  register
+  register,
+  activate
 }
