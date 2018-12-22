@@ -4,10 +4,11 @@ import validator from 'validator';
 const bcrypt = require('bcrypt');
 const uuidv1 = require('uuid/v1');
 
+import config from '../lib/config.js';
 import logger from './logger.module.js';
+import auth from './auth.module.js';
 import db from './db.module.js';
 
-const saltRounds = 12;
 const errCodeRef = {
   'firstname': 200,
   'lastname': 201,
@@ -41,13 +42,16 @@ const validateParams = (params) => {
 }
 
 const prepareParams = async params => {
+  const password = await auth.generatePassword(params.password);
   return new Promise(resolve => {
     params.isActivated = false;
     params.activationCode = uuidv1();
-    bcrypt.hash(params.password, saltRounds).then((err, hash) => {
-      params.password = hash;
-      resolve(params);
-    });
+    params.password = password;
+    resolve(params);
+    // bcrypt.hash(params.password, config.saltRounds).then((err, hash) => {
+    //   params.password = hash;
+    //   resolve(params);
+    // });
   });
 }
 

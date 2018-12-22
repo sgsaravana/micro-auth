@@ -87,10 +87,19 @@ describe('Signup modules unit test', () => {
   })
 
 
-  test('Activate Registrations', () => {});
+  describe('Activate Registrations', () => {
 
-  test('Forgot Password', () => {});
+    test('Activating user with wrong code should fail', async () => {});
+    test('Activeting user with correct code should succeed', async () => {});
 
-  test('Reset Password', () => {});
+  });
+
+  describe('Forgot Password', () => {
+
+    test('forgot password function should return reset code', async () => {});
+    test('change password with wrong reset code should fail', async () => {});
+    test('change password with correct reset code should succeed', async () => {});
+
+  });
 
 });

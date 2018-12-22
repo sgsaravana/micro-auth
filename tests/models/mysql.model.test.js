@@ -166,11 +166,13 @@ describe('Test MySQL Model Functions', () => {
 
     const activationCode = result1.user.activation_code;
 
+    // Sending a wrong activation code should fail
     const errRes = await model.activate(uuidv1());
     expect(errRes).not.toBe(undefined);
     expect(errRes.success).toBe(false);
     expect(errRes.error.code).toBe(300);
 
+    // Sending the correct activation code should succeed
     const result2 = await model.activate(activationCode);
     expect(result2).not.toBe(undefined);
     expect(result2.success).toBe(true);
@@ -179,7 +181,35 @@ describe('Test MySQL Model Functions', () => {
     done();
   });
 
-  test('update password with wrong current password should fail', async done => {
+  test('update password with current password should succeed', async done => {
+    const uuid = uuidv1();
+    const user = {
+      firstname: 'Dominic',
+      lastname: 'Toretto',
+      email: 'dtoretto@gmail.com',
+      password: 'speedkills',
+      activation_code: uuidv1(),
+      uuid: uuid
+    };
+
+    const result1 = await model.register(user);
+    expect(result1).not.toBe(undefined);
+    expect(result1.success).toBe(true);
+
+    const changePassParams = {
+      uuid: uuid,
+      email: user.email,
+      current_password: user.password,
+      password: 'rideorhide',
+      password_confirmation: 'rideorhide'
+    };
+
+    const result2 = await model.changePassword(changePassParams);
+    console.log("result2 =====");
+    console.log(result2);
+    expect(result2).not.toBe(undefined);
+    expect(result2.success).toBe(true);
+
     done();
   });
 

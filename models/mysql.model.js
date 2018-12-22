@@ -1,5 +1,6 @@
 'use strict'
 
+import auth from '../modules/auth.module.js';
 import logger from '../modules/logger.module.js';
 const adapter = require('../database_adapter/mysql.adapter.js');
 let pool, database;
@@ -49,8 +50,8 @@ const getUserByKey = async (field, value) => {
   });
 }
 
-const getUserByUUID = async (uuid) => {
-  return getUserByKey('uuid', uuid);
+// const getUserByUUID = async (uuid) => {
+  // return getUserByKey('uuid', uuid);
   // const con = await checkConnection();
   // if(!con) {
   //   return { success: false, error: { code: 100, message: logger.getErrorMessage(100) } };
@@ -67,8 +68,7 @@ const getUserByUUID = async (uuid) => {
   //     }
   //   })
   // });
-}
-
+// }
 
 const checkEmailExistence = async (email) => {
   const record = await getUserByKey('email', email);
@@ -159,12 +159,36 @@ const activate = async (code) => {
     else {
       resolve({ success: false, error: { code: 300, message: logger.getErrorMessage(300) } });
     }
-  })
+  });
 };
+
+const changePassword = async (params) => {
+  const record = await getUserByKey('uuid', params.uuid);
+
+  return new Promise(async resolve => {
+    if (record.success && record.user) {
+      console.log('changing password')
+      database.query('UPDATE users SET password = ? WHERE uuid = ?', [params.password, params.uuid], (err, results) => {
+        console.log("err, results");
+        console.log(err, results);
+        if(err) {
+          resolve({ success: false, error: { code: 321, message: logger.getErrorMessage(321) } });
+        }
+        else {
+          resolve(getUserByKey('uuid', params.uuid));
+        }
+      });
+    }
+    else {
+      resolve({ success: false, error: { code: 320, message: logger.getErrorMessage(320) } });
+    }
+  });
+}
 
 module.exports = {
   init,
   register,
   update,
   activate,
+  changePassword
 };
