@@ -1,13 +1,4 @@
-const CONFIG = {
-    // @ Configurable attribute validation to be implemented
-    // mandatory_attr: ['firstname', 'lastname', etc...]
-
-    // @ DB Module ================================================================================
-    // # Values can be the following:
-    // # allowed values: 'mysql', 'mongodb', 'firebase' - more db modules support to add in future
-    dbModule: 'mysql', // mysql, mongodb, firebase
-    // # END DB Module setup ======================================================================
-
+module.exports = {
 
     // ============================================================================================
     // @ MySQL Configuration ======================================================================
@@ -44,46 +35,10 @@ const CONFIG = {
     //
     // Optional: Add custom / additional fields for the users table if required
     tbl_mysql_users : [
-        //     { field_name: '', type: '' },
+        { field_name: 'username', type: 'VARCHAR' }
         //     { field_name: '', type: '' },
         //     { field_name: '', type: '' }
     ],
     // # END MySQL Schema =========================================================================
 
-
-
-    // ============================================================================================
-    // @ MongoDB Configuration ====================================================================
-    // uncomment the following lines and update url, and dbName
-    //
-    url:    'mongodb://0.0.0.0:27017',
-    dbName: 'micro_auth_dev',
-    //
-    //
-    // # MongoDB Schema ===========================================================================
-    //
-    //
-    //
-    //
-    // # END MongoDB ==============================================================================
-
-
-    // firebase configuration
-    //
-    //
-    //
-    //
-    //
-    //
-
-
-    // ============================================================================================
-    // BCRYPT
-    saltRounds: 12 // increasing this number will slow down the bcrypt process to has the password string
-    //
-    // End
-
-
 }
-
-module.exports = CONFIG;

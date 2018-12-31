@@ -2,7 +2,7 @@
 
 const bcrypt = require('bcrypt');
 
-import config from '../lib/config.js';
+import config from '../config/app.config.js';
 
 const generatePassword = async (password) => {
   bcrypt.hash(password, config.saltRounds).then((err, hash) => {

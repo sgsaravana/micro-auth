@@ -19,6 +19,21 @@ describe('Test Database module', () => {
       params.id = Math.floor(Math.random() * Math.floor(10000000));
       return { success: true, user: params };
     });
+
+    model.getUserByKey = jest.fn().mockImplementation(async (key, val) => {
+      if(key == 'activation_code'){
+        if(val == 'correct-code') {
+          return { success: true, user: {} }
+        }
+        else {
+          return { success: false }
+        }
+      }
+    });
+
+    model.activate = jest.fn().mockImplementation(async () => {
+      return { success: true }
+    });
   });
 
 
@@ -46,8 +61,17 @@ describe('Test Database module', () => {
     done();
   });
 
-  // test('Load mongodb conf', async done => {
-  //   done();
-  // });
+  test('doActivate should check for user by activation code', async done => {
+    const errRes = await db.doActivate('wrong-code');
+    expect(errRes).not.toBe(undefined);
+    expect(errRes.success).toBe(false);
+    expect(errRes.error.code).toBe(300);
+
+    const res = await db.doActivate('correct-code');
+    expect(res).not.toBe(undefined);
+    expect(res.success).toBe(true);
+
+    done();
+  });
 
 });
