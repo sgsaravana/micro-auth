@@ -15,6 +15,15 @@ app.get('/', (req, res) => res.send('Hello World!'));
 // ACTIVATE USER VIA EMAIL CONFIRMATION
 // app.post('/activate', apiV1.activate);
 
+// LOGIN
+// app.post('/login, apiV1.login);
+
+// CHECK AUTHENTICATION
+// app.post('/authenticate', apiV1.authenticate);
+
+// LOGOUT
+// app.post('/logout', apiV1.logout);
+
 // FORGOT PASSWORD - REQUEST RESET, WILL RETURN RESET-CODE
 // app.post('/forgot', apiV1.forgot);
 
