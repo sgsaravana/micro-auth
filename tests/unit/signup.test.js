@@ -12,6 +12,14 @@ describe('Signup modules unit test', () => {
       params.id = Math.floor(Math.random() * Math.floor(10000000));
       return {success: true, user: params};
     });
+    db.doActivate = jest.fn().mockImplementation(async code => {
+      if(code == 'wrong-code') {
+        return {success: false}
+      }
+      else {
+        return {success: true}
+      }
+    })
   });
 
   describe('Register User', () => {
@@ -89,8 +97,23 @@ describe('Signup modules unit test', () => {
 
   describe('Activate Registrations', () => {
 
-    test('Activating user with wrong code should fail', async () => {});
-    test('Activeting user with correct code should succeed', async () => {});
+    test('Activating user with wrong code should fail', async () => {
+      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com', password: 'password' };
+      const result = await signup.register(params);
+
+      const actResult = await signup.activate('wrong-code');
+      expect(actResult).not.toBe(undefined);
+      expect(actResult.success).toBe(false);
+    });
+
+    test('Activeting user with correct code should succeed', async () => {
+      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com', password: 'password' };
+      const result = await signup.register(params);
+      const activationCode = result.user.activationCode;
+
+      const actResult = await signup.activate(activationCode);
+      expect(actResult.success).toBe(true);
+    });
 
   });
 

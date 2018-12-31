@@ -4,7 +4,7 @@ import validator from 'validator';
 const bcrypt = require('bcrypt');
 const uuidv1 = require('uuid/v1');
 
-import config from '../lib/config.js';
+import config from '../config/app.config.js';
 import logger from './logger.module.js';
 import auth from './auth.module.js';
 import db from './db.module.js';
@@ -48,10 +48,6 @@ const prepareParams = async params => {
     params.activationCode = uuidv1();
     params.password = password;
     resolve(params);
-    // bcrypt.hash(params.password, config.saltRounds).then((err, hash) => {
-    //   params.password = hash;
-    //   resolve(params);
-    // });
   });
 }
 
@@ -70,7 +66,9 @@ const register = async (params) => {
   }
 }
 
-const activate = async (done) => {}
+const activate = async (code) => {
+  return db.doActivate(code);
+}
 
 module.exports = {
   register,

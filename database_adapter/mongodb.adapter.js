@@ -14,7 +14,7 @@ const init = async (conf) => {
     return { success: true, database: db.Connection };
   }
   catch (err) {
-    console.error('=== mongo connect error ===', err);
+    // console.error('=== mongo connect error ===', err);
     return { success: false }
   }
 
