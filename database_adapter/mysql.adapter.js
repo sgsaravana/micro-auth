@@ -52,7 +52,7 @@ const executeSchemaOperation = async (pool) => {
     const query = schema.users();
     const res = pool.query(query, (err, result) => {
       if(err) {
-        console.error(err);
+        // console.error(err);
         resolve({ success: false, error: err });
       }
       else {

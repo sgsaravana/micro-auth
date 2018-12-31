@@ -20,19 +20,19 @@ const sampleData = [
     firstname: 'Steve',
     lastname: 'Jobs',
     email: 'steve@apple.com',
-    password: 'macintosh'
+    password: 'm@c!nt0sh'
   },
   {
     firstname: 'Jason',
     lastname: 'Statham',
     email: 'jstatham@gmail.com',
-    password: 'killhobbs'
+    password: 'KillHobbs'
   },
   {
     firstname: 'Dwayne',
     lastname: 'Johnson',
     email: 'therock@gmail.com',
-    password: 'ifyousmellwhattherockiscooking'
+    password: 'IfYouSmellWhatTheRockIsCooking'
   }
 ]
 
@@ -84,7 +84,7 @@ describe('Test MySQL Model Functions', () => {
 
     sampleData.forEach(async data => {
       data.uuid = uuidv1();
-      await model.register(data);
+      await model.create(data);
     });
 
     done();
@@ -92,7 +92,7 @@ describe('Test MySQL Model Functions', () => {
 
   test('register new user should return success', async done => {
     registerParams.uuid = uuidv1();
-    const result = await model.register(registerParams);
+    const result = await model.create(registerParams);
 
     expect(result).not.toBe(undefined);
     expect(result.success).toBe(true);
@@ -100,27 +100,6 @@ describe('Test MySQL Model Functions', () => {
     expect(result.user).not.toBe(undefined);
     expect(result.user.uuid).toEqual(registerParams.uuid);
 
-    done();
-  });
-
-  test('register existing email should fail', async done => {
-    const params = {
-      firstname: 'Duplicate user',
-      email: 'dupemail@gmail.com',
-      password: 'somethingtemporary',
-      uuid: uuidv1()
-    };
-    const result1 = await model.register(params);
-    expect(result1).not.toBe(undefined);
-    expect(result1.success).toBe(true);
-
-    params.uuid = uuidv1();
-    params.firstname = 'New Duplicate';
-
-    const result2 = await model.register(params);
-
-    expect(result2).not.toBe(undefined);
-    expect(result2.success).toBe(false);
     done();
   });
 
@@ -134,7 +113,7 @@ describe('Test MySQL Model Functions', () => {
       uuid: uuid
     };
 
-    const result1 = await model.register(user);
+    const result1 = await model.create(user);
     expect(result1).not.toBe(undefined);
     expect(result1.success).toBe(true);
 
@@ -149,39 +128,7 @@ describe('Test MySQL Model Functions', () => {
     done();
   });
 
-  test('activate user should mark activation to true and wrong activation code will send error', async done => {
-    const uuid = uuidv1();
-    const user = {
-      firstname: 'John',
-      lastname: 'Williams',
-      email: 'jwilliam@gmail.com',
-      password: 'whoisthis',
-      activation_code: uuidv1(),
-      uuid: uuid
-    };
-
-    const result1 = await model.register(user);
-    expect(result1).not.toBe(undefined);
-    expect(result1.success).toBe(true);
-
-    const activationCode = result1.user.activation_code;
-
-    // Sending a wrong activation code should fail
-    const errRes = await model.activate(uuidv1());
-    expect(errRes).not.toBe(undefined);
-    expect(errRes.success).toBe(false);
-    expect(errRes.error.code).toBe(300);
-
-    // Sending the correct activation code should succeed
-    const result2 = await model.activate(activationCode);
-    expect(result2).not.toBe(undefined);
-    expect(result2.success).toBe(true);
-    expect(result2.user.uuid).toBe(uuid);
-    expect(result2.user.activated).toBe(1);
-    done();
-  });
-
-  test('update password with current password should succeed', async done => {
+  test('Get user by different keys should return the right record', async done => {
     const uuid = uuidv1();
     const user = {
       firstname: 'Dominic',
@@ -192,33 +139,18 @@ describe('Test MySQL Model Functions', () => {
       uuid: uuid
     };
 
-    const result1 = await model.register(user);
-    expect(result1).not.toBe(undefined);
-    expect(result1.success).toBe(true);
+    const result = await model.create(user);
+    expect(result).not.toBe(undefined);
+    expect(result.success).toBe(true);
 
-    const changePassParams = {
-      uuid: uuid,
-      email: user.email,
-      current_password: user.password,
-      password: 'rideorhide',
-      password_confirmation: 'rideorhide'
-    };
-
-    const result2 = await model.changePassword(changePassParams);
-    console.log("result2 =====");
-    console.log(result2);
-    expect(result2).not.toBe(undefined);
-    expect(result2.success).toBe(true);
+    const res1 = await model.getUserByKey('uuid', uuid);
+    expect(res1).not.toBe(undefined);
+    expect(res1.success).toBe(true);
+    expect(res1.user.email).toBe(user.email);
+    console.log("res1");
+    console.log(res1);
 
     done();
-  });
-
-  test('check authentication should check for credentials', async done => {
-    done();
-  });
-
-  test('check wrong credentials should return false', async done => {
-    done();
-  });
+  })
 
 });

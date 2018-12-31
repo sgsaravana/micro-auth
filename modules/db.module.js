@@ -1,8 +1,9 @@
 'use strict'
 
 import logger from './logger.module.js';
-import config from '../lib/config.js';
-const model = require(`../models/${config.dbModule}.model.js`);
+import appConfig from '../config/app.config';
+const dbConfig = require(`../config/${appConfig.dbModule}.config.js`);
+const model = require(`../models/${appConfig.dbModule}.model.js`);
 
 let isReady = false;
 
@@ -10,7 +11,7 @@ const init = async () => {
   if (isReady) { return true; }
 
   try {
-    isReady = await model.init(config);
+    isReady = await model.init(dbConfig);
     console.log('isReady: ', isReady);
     return isReady;
   }
@@ -40,14 +41,24 @@ const doRegister = async (params) => {
   }
 };
 
-// const doActivate = async (params) => {
-//   if (!isReady) {
-//     isReady = await init();
-//     if (!isReady) {
-//       return { success: false, error: { code: 100, message: logger.getErrorMessage(100) } };
-//     }
-//   }
-// }
+const doActivate = async (code) => {
+  if (!isReady) {
+    isReady = await init();
+    if (!isReady) {
+      return { success: false, error: { code: 100, message: logger.getErrorMessage(100) } };
+    }
+  }
+
+  // Check for user with code
+  const record = await model.getUserByKey('activation_code', code);
+  if(record.success && record.user) {
+    const result = await model.activate(record.user.uuid);
+    return result;
+  }
+  else {
+    return { success: false, error: { code: 300, message: logger.getErrorMessage(300) } };
+  }
+}
 
 // const doResetPassword = async (params) => {
 //   if (!isReady) {
@@ -61,6 +72,6 @@ const doRegister = async (params) => {
 module.exports = {
     init,
     doRegister,
-    // doActivate,
+    doActivate,
     // doResetPassword
 }
