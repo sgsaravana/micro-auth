@@ -5,14 +5,14 @@ const bcrypt = require('bcrypt');
 import config from '../config/app.config.js';
 
 const generatePassword = async (password) => {
-  bcrypt.hash(password, config.saltRounds).then((err, hash) => {
-    return hash;
+  return new Promise(resolve => {
+    bcrypt.hash(password, config.saltRounds).then(resolve);
   });
 }
 
 const checkPasswords = async (dbPass, userPass) => {
-  bcrypt.hash(userPass, config.saltRounds).then((err, hash) => {
-    return dbPass == hash;
+  return new Promise(resolve => {
+    bcrypt.compare(userPass, dbPass).then(resolve);
   });
 }
 
