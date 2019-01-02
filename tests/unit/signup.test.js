@@ -17,6 +17,9 @@ describe('Signup modules unit test', () => {
         if(value == "duplicateemail@gmail.com"){
           return { success: true, user: {} };
         }
+        else if (value == "anotherduplicateemail@gmail.com"){
+          return { success: false };
+        }
         else {
           return { success: true };
         }
@@ -84,6 +87,16 @@ describe('Signup modules unit test', () => {
 
       expect(result.success).toBe(false);
       expect(result.error.code).toBe(211);
+      done();
+    });
+
+    test('Email check error when registering should return code 322 error', async done => {
+      // Register a new user with existing email address
+      const params = { firstname: 'Saravana', email: 'anotherduplicateemail@gmail.com', password: 'password' };
+      const result = await signup.register(params);
+
+      expect(result.success).toBe(false);
+      expect(result.error.code).toBe(322);
       done();
     });
 
