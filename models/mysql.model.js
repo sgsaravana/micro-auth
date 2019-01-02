@@ -45,7 +45,7 @@ const getUserByKey = async (field, value) => {
       else {
         resolve({ success: true, user: result[0] });
       }
-    })
+    });
   });
 }
 

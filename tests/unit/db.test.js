@@ -1,7 +1,7 @@
 'use strict'
 
 import db from '../../modules/db.module.js';
-// let db;
+const uuidv1 = require('uuid/v1');
 const model = require('../../models/mysql.model.js');
 
 const registerParams = {
@@ -12,67 +12,71 @@ const registerParams = {
 
 describe('Test Database module', () => {
 
-  beforeEach(() => {
-    // Mock model.init() and db.init() function to avoid connecting to databases
-    model.init     = jest.fn().mockImplementation(async () => { return true; });
-    model.register = jest.fn().mockImplementation(async (params) => {
-      params.id = Math.floor(Math.random() * Math.floor(10000000));
-      return { success: true, user: params };
-    });
+  describe('Test failure case', () => {
+    test('doRegister should fail with status code 100 if database init fails', async done => {
+      model.init = jest.fn().mockImplementation(async () => { return false; });
 
-    model.getUserByKey = jest.fn().mockImplementation(async (key, val) => {
-      if(key == 'activation_code'){
-        if(val == 'correct-code') {
-          return { success: true, user: {} }
+      const res = await db.doRegister(registerParams);
+      // console.log('res: ', res);
+      expect(res).not.toBe(undefined);
+      expect(res.success).toBe(false);
+      expect(res.error.code).toBe(100);
+
+      done();
+    });
+  });
+
+  describe('Test after DB Init success', () => {
+    beforeAll(() => {
+      // Mock model.init() and db.init() function to avoid connecting to databases
+      model.init = jest.fn().mockImplementation(async () => { return true; });
+      model.create = jest.fn().mockImplementation(async (params) => {
+        params.id   = Math.floor(Math.random() * Math.floor(10000000));
+        params.uuid = uuidv1();
+        return { success: true, user: params };
+      });
+
+      model.getUserByKey = jest.fn().mockImplementation(async (key, val) => {
+        if(key == 'uuid'){
+          return { success: true, user: {uuid: val} }
         }
-        else {
-          return { success: false }
-        }
-      }
+      });
+
+      model.update = jest.fn().mockImplementation(async (uuid, data) => {
+        data.uuid = uuid;
+        return { success: true, user: data }
+      });
     });
 
-    model.update = jest.fn().mockImplementation(async (uuid, data) => {
-      data.uuid = uuid;
-      return { success: true, user: data }
+    test('Get User should return the user record', async done => {
+      const res1 = await db.getUser('uuid', 'somecorrectuuid')
+      expect(res1).not.toBe(undefined);
+      expect(res1.success).toBe(true);
+      done();
     });
-  });
 
+    test('doRegister should register user to the database', async done => {
 
-  test('doRegister should fail with status code 100 if database init fails', async done => {
-    model.init = jest.fn().mockImplementation(async () => { return false; });
+      const res = await db.doRegister(registerParams);
+      expect(res).not.toBe(undefined);
+      expect(res.success).toBe(true);
+      expect(res.user.id).not.toBe(undefined);
+      expect(res.user.uuid).not.toBe(undefined);
+      expect(res.user.firstname).toBe(registerParams.firstname);
 
-    const res = await db.doRegister(registerParams);
+      done();
+    });
 
-    expect(res).not.toBe(undefined);
-    expect(res.success).toBe(false);
-    expect(res.error.code).toBe(100);
+    test('doUpdate should update existing user record', async done => {
+      const res = await db.doRegister(registerParams);
+      const user = res.user;
 
-    done();
-  });
-
-  test('doRegister should register user to the database', async done => {
-
-    const res = await db.doRegister(registerParams);
-
-    expect(res).not.toBe(undefined);
-    expect(res.success).toBe(true);
-    expect(res.user.id).not.toBe(undefined);
-    expect(res.user.firstname).toBe(registerParams.firstname);
-
-    done();
-  });
-
-  test('doActivate should check for user by activation code', async done => {
-    const errRes = await db.doActivate('wrong-code');
-    expect(errRes).not.toBe(undefined);
-    expect(errRes.success).toBe(false);
-    expect(errRes.error.code).toBe(300);
-
-    const res = await db.doActivate('correct-code');
-    expect(res).not.toBe(undefined);
-    expect(res.success).toBe(true);
-
-    done();
+      const result = await db.doUpdate(user.uuid, { lastname: 'Balaraj' });
+      expect(result).not.toBe(undefined);
+      expect(result.success).toBe(true);
+      expect(result.user.lastname).toBe('Balaraj');
+      done();
+    });
   });
 
 });
