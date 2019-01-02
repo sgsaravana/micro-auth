@@ -44,8 +44,9 @@ const validateParams = (params) => {
 const prepareParams = async params => {
   const password = await auth.generatePassword(params.password);
   return new Promise(resolve => {
-    params.isActivated = false;
+    params.isActivated = !config.activationRequired;
     params.activationCode = uuidv1();
+    params.activation_code_generated_at = new Date().getTime();
     params.password = password;
     resolve(params);
   });
@@ -54,23 +55,28 @@ const prepareParams = async params => {
 // ===== PUBLIC FUNCTIONS =====
 
 const register = async (params) => {
+  // Check for validation errors
   const errors = validateParams(params);
-
-  if (!errors) {
-    // No validation errors
-    return db.doRegister(await prepareParams(params));
-  }
-  else {
+  if (errors) {
     // Found validation errors, return error
     return { success: false, error: errors };
   }
+
+  // Check if user record exist
+  const record = await db.getUser('email', params.email);
+  if(record.success && record.user) {
+    // User already exist. Return error message
+    return { success: false, error: { code: 211, message: logger.getErrorMessage(211) } };
+  }
+
+  if(!record.success) {
+    return { success: false, error: { code: 322, message: logger.getErrorMessage(322) } };
+  }
+
+  if (!errors && record.success && !record.user) {
+    // No validation errors
+    return db.doRegister(await prepareParams(params));
+  }
 }
 
-const activate = async (code) => {
-  return db.doActivate(code);
-}
-
-module.exports = {
-  register,
-  activate
-}
+module.exports = { register }

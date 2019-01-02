@@ -26,6 +26,8 @@ module.exports = {
     // #    activation_code_generated_at: TIMESTAMP,
     // #    reset_code: VARCHAR(255),
     // #    reset_code_generated_at: TIMESTAMP,
+    // #    password_reset_at: TIMESTAMP,
+    // #    password_changed_at: TIMESTAMP,
     // #    created_at: TIMESTAMP,
     // #    updated_at: TIMESTAMP
     // # }

@@ -12,6 +12,16 @@ describe('Signup modules unit test', () => {
       params.id = Math.floor(Math.random() * Math.floor(10000000));
       return {success: true, user: params};
     });
+    db.getUser = jest.fn().mockImplementation(async (key, value) => {
+      if(key == "email"){
+        if(value == "duplicateemail@gmail.com"){
+          return { success: true, user: {} };
+        }
+        else {
+          return { success: true };
+        }
+      }
+    });
     db.doActivate = jest.fn().mockImplementation(async code => {
       if(code == 'wrong-code') {
         return {success: false}
@@ -56,7 +66,7 @@ describe('Signup modules unit test', () => {
       done()
     });
 
-    test('validates email', async (done) => {
+    test('validates email', async done => {
       const params1 = { firstname: 'Saravana', email: 'wrongemail@fake', password: 'password' }
       const response1 = await signup.register(params1);
 
@@ -67,62 +77,53 @@ describe('Signup modules unit test', () => {
       done();
     });
 
-    test('Register User will return user id', async () => {
+    test('Registering user with existing email should return error', async done => {
+      // Register a new user with existing email address
+      const params = { firstname: 'Saravana', email: 'duplicateemail@gmail.com', password: 'password' };
+      const result = await signup.register(params);
+
+      expect(result.success).toBe(false);
+      expect(result.error.code).toBe(211);
+      done();
+    });
+
+    test('Register User will return user id and activation code', async done => {
       // Register a new user with given parameters
-      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com', password: 'password' };
+      const params = { firstname: 'Saravana', email: 'saravana1@gmail.com', password: 'password' };
       const result = await signup.register(params);
 
       expect(result.success).toBe(true);
       expect(result.user.id).not.toBe(null);
+      expect(result.user.activationCode).not.toBe(null);
+      done();
     });
 
-    test('Registered user will be inactive', async () => {
-      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com', password: 'password' };
+    test('Registered user will be inactive', async done => {
+      const params = { firstname: 'Saravana', email: 'sgravana@gmail.com', password: 'password' };
       const result = await signup.register(params);
 
       expect(result.success).toBe(true);
       expect(result.user.isActivated).toBe(false);
+      done();
     });
 
-    test('Registering user will return a uuid as confirmation string for activation', async () => {
-      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com', password: 'password' };
+    test('Registering user will return a uuid as confirmation string for activation', async done => {
+      const params = { firstname: 'Saravana', email: 'saravana@gmail.com', password: 'password' };
       const result = await signup.register(params);
 
       expect(result.success).toBe(true);
       expect(result.user.activationCode.length).toBeGreaterThan(0);
       expect(typeof result.user.activationCode).toBe(typeof 'string');
-    })
-  })
-
-
-  describe('Activate Registrations', () => {
-
-    test('Activating user with wrong code should fail', async () => {
-      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com', password: 'password' };
-      const result = await signup.register(params);
-
-      const actResult = await signup.activate('wrong-code');
-      expect(actResult).not.toBe(undefined);
-      expect(actResult.success).toBe(false);
+      done();
     });
-
-    test('Activeting user with correct code should succeed', async () => {
-      const params = { firstname: 'Saravana', email: 'sgsaravana@gmail.com', password: 'password' };
-      const result = await signup.register(params);
-      const activationCode = result.user.activationCode;
-
-      const actResult = await signup.activate(activationCode);
-      expect(actResult.success).toBe(true);
-    });
-
   });
 
-  describe('Forgot Password', () => {
+  // describe('Forgot Password', () => {
 
-    test('forgot password function should return reset code', async () => {});
-    test('change password with wrong reset code should fail', async () => {});
-    test('change password with correct reset code should succeed', async () => {});
+  //   test('forgot password function should return reset code', async () => {});
+  //   test('change password with wrong reset code should fail', async () => {});
+  //   test('change password with correct reset code should succeed', async () => {});
 
-  });
+  // });
 
 });

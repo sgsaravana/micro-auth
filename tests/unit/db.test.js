@@ -31,8 +31,9 @@ describe('Test Database module', () => {
       }
     });
 
-    model.activate = jest.fn().mockImplementation(async () => {
-      return { success: true }
+    model.update = jest.fn().mockImplementation(async (uuid, data) => {
+      data.uuid = uuid;
+      return { success: true, user: data }
     });
   });
 

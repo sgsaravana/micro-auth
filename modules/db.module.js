@@ -21,6 +21,28 @@ const init = async () => {
   }
 };
 
+const getUser = async (field, value) => {
+  if (!isReady) {
+    isReady = await init();
+    if (!isReady) {
+      return { success: false, error: { code: 100, message: logger.getErrorMessage(100) } };
+    }
+  }
+
+  try {
+    const record = await model.getUserByKey(field, value);
+    if(record.success && record.user) {
+      return record;
+    }
+    else {
+      return { success: false, error: { code: 320, message: logger.getErrorMessage(320) } };
+    }
+  }
+  catch(err) {
+    return err;
+  }
+}
+
 const doRegister = async (params) => {
   // console.log('isReady at beginning: ', isReady);
   if (!isReady) {
@@ -52,7 +74,10 @@ const doActivate = async (code) => {
   // Check for user with code
   const record = await model.getUserByKey('activation_code', code);
   if(record.success && record.user) {
-    const result = await model.activate(record.user.uuid);
+    const result = await model.update(record.user.uuid, {
+      activated: true,
+      activated_at: new Date().getTime()
+    });
     return result;
   }
   else {
@@ -71,7 +96,7 @@ const doActivate = async (code) => {
 
 module.exports = {
     init,
+    getUser,
     doRegister,
-    doActivate,
-    // doResetPassword
+    doActivate
 }
