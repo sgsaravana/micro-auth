@@ -1,6 +1,5 @@
 'use strict'
 
-import auth from '../modules/auth.module.js';
 import logger from '../modules/logger.module.js';
 const adapter = require('../database_adapter/mysql.adapter.js');
 let pool, database;

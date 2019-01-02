@@ -38,7 +38,12 @@ describe('Test Database module', () => {
 
       model.getUserByKey = jest.fn().mockImplementation(async (key, val) => {
         if(key == 'uuid'){
-          return { success: true, user: {uuid: val} }
+          if(val == 'wrong-uuid') {
+            return { success: false }
+          }
+          else {
+            return { success: true, user: {uuid: val} }
+          }
         }
       });
 
@@ -52,6 +57,14 @@ describe('Test Database module', () => {
       const res1 = await db.getUser('uuid', 'somecorrectuuid')
       expect(res1).not.toBe(undefined);
       expect(res1.success).toBe(true);
+      done();
+    });
+
+    test('Get user with non-existing UUID should return error', async done => {
+      const res = await db.getUser('uuid', 'wrong-uuid');
+      expect(res).not.toBe(undefined);
+      expect(res.success).toBe(false);
+      expect(res.error.code).toBe(320);
       done();
     });
 
@@ -75,6 +88,16 @@ describe('Test Database module', () => {
       expect(result).not.toBe(undefined);
       expect(result.success).toBe(true);
       expect(result.user.lastname).toBe('Balaraj');
+      done();
+    });
+
+    test('Update user with wrong UUID should fail', async done => {
+      const res = await db.doRegister(registerParams);
+
+      const result = await db.doUpdate('wrong-uuid', { lastname: 'Balaraj' });
+      expect(result).not.toBe(undefined);
+      expect(result.success).toBe(false);
+      expect(res.error.code).toBe(320);
       done();
     });
   });
