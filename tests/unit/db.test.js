@@ -97,7 +97,7 @@ describe('Test Database module', () => {
       const result = await db.doUpdate('wrong-uuid', { lastname: 'Balaraj' });
       expect(result).not.toBe(undefined);
       expect(result.success).toBe(false);
-      expect(res.error.code).toBe(320);
+      expect(result.error.code).toBe(320);
       done();
     });
   });
