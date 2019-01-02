@@ -147,8 +147,6 @@ describe('Test MySQL Model Functions', () => {
     expect(res1).not.toBe(undefined);
     expect(res1.success).toBe(true);
     expect(res1.user.email).toBe(user.email);
-    console.log("res1");
-    console.log(res1);
 
     done();
   })

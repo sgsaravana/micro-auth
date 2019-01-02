@@ -7,7 +7,6 @@ describe('Auth Module tests', () => {
   test('should create a password hash', async done => {
     const passwd = "testpassword";
     const hash = await auth.generatePassword(passwd);
-    console.log("hash : ", hash);
     expect(hash).not.toBe(undefined);
     expect(hash).not.toBe(passwd);
     done();
@@ -27,10 +26,6 @@ describe('Auth Module tests', () => {
     expect(check1).not.toBe(false);
     expect(check2).not.toBe(undefined);
     expect(check2).not.toBe(true);
-    done();
-  });
-
-  test('should compare passwords and return false if they do not match', async done => {
     done();
   });
 
