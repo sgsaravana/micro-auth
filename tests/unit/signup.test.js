@@ -12,6 +12,16 @@ describe('Signup modules unit test', () => {
       params.id = Math.floor(Math.random() * Math.floor(10000000));
       return {success: true, user: params};
     });
+    db.getUser = jest.fn().mockImplementation(async (key, value) => {
+      if(key == "email"){
+        if(value == "duplicateemail@gmail.com"){
+          return { success: true, user: {} };
+        }
+        else {
+          return { success: true };
+        }
+      }
+    });
     db.doActivate = jest.fn().mockImplementation(async code => {
       if(code == 'wrong-code') {
         return {success: false}
@@ -68,16 +78,23 @@ describe('Signup modules unit test', () => {
     });
 
     test('Registering user with existing email should return error', async done => {
+      // Register a new user with existing email address
+      const params = { firstname: 'Saravana', email: 'duplicateemail@gmail.com', password: 'password' };
+      const result = await signup.register(params);
+
+      expect(result.success).toBe(false);
+      expect(result.error.code).toBe(211);
       done();
     });
 
-    test('Register User will return user id', async done => {
+    test('Register User will return user id and activation code', async done => {
       // Register a new user with given parameters
       const params = { firstname: 'Saravana', email: 'saravana1@gmail.com', password: 'password' };
       const result = await signup.register(params);
 
       expect(result.success).toBe(true);
       expect(result.user.id).not.toBe(null);
+      expect(result.user.activationCode).not.toBe(null);
       done();
     });
 

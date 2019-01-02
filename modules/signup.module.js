@@ -69,7 +69,11 @@ const register = async (params) => {
     return { success: false, error: { code: 211, message: logger.getErrorMessage(211) } };
   }
 
-  if (!errors && !record.success && !record.user) {
+  if(!record.success) {
+    return { success: false, error: { code: 322, message: logger.getErrorMessage(322) } };
+  }
+
+  if (!errors && record.success && !record.user) {
     // No validation errors
     return db.doRegister(await prepareParams(params));
   }
