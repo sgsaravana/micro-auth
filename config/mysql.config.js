@@ -5,7 +5,7 @@ module.exports = {
     // uncomment the following lines and update host, username, password, port, database name and pool count
     host:     '0.0.0.0',
     user:     'root',
-    port:     '3306',
+    port:     '33060',
     password: '',
     database: 'micro_auth_dev',
     pool:     '10',
@@ -33,11 +33,11 @@ module.exports = {
     // # }
     //
     // # Allowed Data types:
-    // # ['TINYINT', 'SMALLINT', 'MEDIUMINT', 'INT', 'BIGINT', 'DECIMAL', 'FLOAT', 'DOUBLE', 'BIT', 'CHAR', 'VARCHAR', 'BINARY', 'VARBINARY', 'TINYBLOB', 'BLOB', 'MEDIUMBLOB', 'LONGBLOB', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT', 'ENUM', 'SET', 'DATE', 'TIME', 'DATETIME', 'TIMESTAMP', 'YEAR' ]
+    // # ['TINYINT', 'SMALLINT', 'MEDIUMINT', 'INT', 'BIGINT', 'DECIMAL', 'FLOAT', 'DOUBLE', 'BIT', 'CHAR(128)', 'VARCHAR(256)', 'BINARY', 'VARBINARY', 'TINYBLOB', 'BLOB', 'MEDIUMBLOB', 'LONGBLOB', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT', 'ENUM', 'SET', 'DATE', 'TIME', 'DATETIME', 'TIMESTAMP', 'YEAR' ]
     //
     // Optional: Add custom / additional fields for the users table if required
     tbl_mysql_users : [
-        { field_name: 'username', type: 'VARCHAR' }
+        { field_name: 'username', type: 'VARCHAR(255)' }
         //     { field_name: '', type: '' },
         //     { field_name: '', type: '' }
     ],

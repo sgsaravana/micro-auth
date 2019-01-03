@@ -50,7 +50,7 @@ const checkAndCreateDatabase = async () => {
 const executeSchemaOperation = async (pool) => {
   return new Promise(resolve => {
     const query = schema.users();
-    const res = pool.query(query, (err, result) => {
+    pool.query(query, (err, result) => {
       if(err) {
         // console.error(err);
         resolve({ success: false, error: err });

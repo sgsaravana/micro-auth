@@ -9,12 +9,12 @@ const users = () => {
     const customFields = utils.generateCustomFields();
 
     const allFields = fields.concat(customFields);
+    allFields.push("PRIMARY KEY (uuid)");
 
     str += "CREATE TABLE IF NOT EXISTS users (";
     str += allFields.join(', ');
-    str += "PRIMARY KEY (uuid)";
+    // str += "PRIMARY KEY (uuid)";
     str += ")"
-
     return str;
 }
 
