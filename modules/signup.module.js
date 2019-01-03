@@ -6,7 +6,7 @@ const uuidv1 = require('uuid/v1');
 
 import config from '../config/app.config.js';
 import logger from './logger.module.js';
-import auth from './auth.module.js';
+import auth from './password.module.js';
 import db from './db.module.js';
 
 const errCodeRef = {

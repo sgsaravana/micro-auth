@@ -59,8 +59,7 @@ const executeSchemaOperation = async (pool) => {
         resolve({ success: true });
       }
     });
-  })
-
+  });
 }
 
 const init = async (conf) => {
