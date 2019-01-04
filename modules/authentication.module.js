@@ -33,7 +33,6 @@ const generateToken = async user => {
 };
 
 const verifyToken = async token => {
-  console.log('config.jwtSignMethod: ', config.jwtSignMethod);
   if(config.jwtSignMethod == "secret") {
     try{
       // Verify token with secret
