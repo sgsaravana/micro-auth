@@ -46,7 +46,7 @@ const prepareParams = async params => {
   return new Promise(resolve => {
     params.isActivated = !config.activationRequired;
     params.activationCode = uuidv1();
-    params.activation_code_generated_at = new Date().getTime();
+    params.activationCodeGeneratedAt = new Date().getTime();
     params.password = password;
     resolve(params);
   });

@@ -8,7 +8,7 @@ describe('Reset password test', () => {
   beforeAll(() => {
     db.init = jest.fn().mockImplementation(async () => { return true; });
     db.getUser = jest.fn().mockImplementation(async (key, value) => {
-      if(key == "reset_code"){
+      if(key == "resetCode"){
         if(value == "CorrectResetCode"){
           return { success: true, user: {} };
         }
