@@ -1,6 +1,7 @@
 'use strict'
 
 import logger from '../modules/logger.module.js';
+import utils from '../lib/utils';
 const adapter = require('../database_adapter/mysql.adapter.js');
 let pool, database;
 
@@ -29,6 +30,22 @@ const checkConnection = async () => {
   }
 }
 
+const generateQueryParams = (params) => {
+  const res = {};
+  for(const key in params) {
+    res[utils.toSnakeCase(key)] = params[key];
+  }
+  return res;
+}
+
+const generateCamelCaseObj = (obj) => {
+  const res = {};
+  for(const key in obj) {
+    res[utils.toCamelCase(key)] = obj[key];
+  }
+  return res;
+}
+
 const getUserByKey = async (field, value) => {
   const con = await checkConnection();
   if(!con) {
@@ -36,13 +53,14 @@ const getUserByKey = async (field, value) => {
   }
 
   return new Promise(resolve => {
-    database.query('SELECT * FROM users WHERE ' + field + ' = ?', value, (err, result) => {
+    database.query('SELECT * FROM users WHERE ' + utils.toSnakeCase(field) + ' = ?', value, (err, result) => {
       if(err) {
         console.error(err);
         resolve({ success: false, error: err });
       }
       else {
-        resolve({ success: true, user: result[0] });
+        // console.log("RESULT :: ", generateCamelCaseObj(result[0]));
+        resolve({ success: true, user: generateCamelCaseObj(result[0]) });
       }
     });
   });
@@ -54,8 +72,9 @@ const create = async (params) => {
     return { success: false, error: { code: 100, message: logger.getErrorMessage(100) } };
   }
 
+  // const createParams = generateQueryParams(params);
   return new Promise(resolve => {
-    database.query('INSERT INTO users SET ?', params, (err, result) => {
+    database.query('INSERT INTO users SET ?', generateQueryParams(params), (err, result) => {
       if(err) {
         console.error(err);
         resolve({ success: false, error: err });
@@ -72,7 +91,7 @@ const update = async (uuid, params) => {
   let keys = [];
   let values = [];
   Object.keys(params).forEach(field => {
-    keys.push(field + ' = ?');
+    keys.push(utils.toSnakeCase(field) + ' = ?');
     values.push(params[field]);
   });
 

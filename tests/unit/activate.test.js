@@ -7,7 +7,7 @@ describe('Activate module test', () => {
 
   beforeAll(async () => {
     db.getUser = jest.fn().mockImplementation(async (key, code) => {
-      if(key == 'activation_code' && code == 'wrong-code') {
+      if(key == 'activationCode' && code == 'wrong-code') {
         return { success: false }
       }
       else {

@@ -20,19 +20,22 @@ const sampleData = [
     firstname: 'Steve',
     lastname: 'Jobs',
     email: 'steve@apple.com',
-    password: 'm@c!nt0sh'
+    password: 'm@c!nt0sh',
+    activationCode: '36435634632523465'
   },
   {
     firstname: 'Jason',
     lastname: 'Statham',
     email: 'jstatham@gmail.com',
-    password: 'KillHobbs'
+    password: 'KillHobbs',
+    activationCode: 'uyrgbiqv364trbiq6w48'
   },
   {
     firstname: 'Dwayne',
     lastname: 'Johnson',
     email: 'therock@gmail.com',
-    password: 'IfYouSmellWhatTheRockIsCooking'
+    password: 'IfYouSmellWhatTheRockIsCooking',
+    activationCode: 'cds87aftbi6sbfiasybdgauys'
   }
 ]
 
@@ -40,7 +43,8 @@ const registerParams = {
   firstname: 'Saravana',
   lastname: 'B',
   email: 'sgsaravana@gmail.com',
-  password: 'password'
+  password: 'password',
+  activationCode: 'vis7a6tfbaw8biauygfiauy'
 };
 
 describe('Test MySQL Connection', () => {

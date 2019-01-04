@@ -5,12 +5,12 @@ import logger from './logger.module';
 import passwd from './password.module';
 
 const changePassword = async (resetCode, newPassword) => {
-  const record = await db.getUser('reset_code', resetCode);
+  const record = await db.getUser('resetCode', resetCode);
   if(record.success && record.user) {
     const password = await passwd.generatePassword(newPassword);
     const result = db.update(record.user.uuid, {
       password: password,
-      password_reset_at: new Date().getTime()
+      passwordResetAt: new Date().getTime()
     });
     return result;
   }
