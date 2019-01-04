@@ -6,6 +6,7 @@ describe('Test Utils function', () => {
 
   test('convert camelCase to snake_case', () => {
     expect(utils.toSnakeCase('testThisText')).toBe('test_this_text');
+    expect(utils.toSnakeCase('testThisJsText')).toBe('test_this_js_text');
   });
 
   test('convert snake_case to camelCase', () => {
