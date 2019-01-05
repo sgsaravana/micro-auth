@@ -1,6 +1,5 @@
 'use strict'
 
-// import config from '../lib/config.js';
 import utils from '../lib/utils.mysql.js';
 
 const users = () => {
@@ -13,7 +12,6 @@ const users = () => {
 
     str += "CREATE TABLE IF NOT EXISTS users (";
     str += allFields.join(', ');
-    // str += "PRIMARY KEY (uuid)";
     str += ")"
     return str;
 }

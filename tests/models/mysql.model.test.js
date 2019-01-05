@@ -153,6 +153,6 @@ describe('Test MySQL Model Functions', () => {
     expect(res1.user.email).toBe(user.email);
 
     done();
-  })
+  });
 
 });
