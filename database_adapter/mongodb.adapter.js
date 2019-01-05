@@ -1,6 +1,8 @@
 'use strict'
 
 import mongoose from 'mongoose';
+const User = require('./mongodb.user.schema.js');
+
 let config, url, dbName;
 
 const init = async (conf) => {
@@ -10,6 +12,7 @@ const init = async (conf) => {
 
   try {
     const db = await mongoose.connect(`${url}/${dbName}`);
+
     console.log('=== connected to mongo ===');
     return { success: true, database: db.Connection };
   }
@@ -21,5 +24,6 @@ const init = async (conf) => {
 }
 
 module.exports = {
-  init
+  init,
+  User
 };
