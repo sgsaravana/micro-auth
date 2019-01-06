@@ -10,12 +10,14 @@ describe('Signup process', () => {
     setTimeout(() => { process.exit() }, 1000);
   });
 
-  test('Register User', () => {});
+  test('Register New User', async done => {
+    done();
+  });
 
-  test('Activate registration', () => {});
+  // test('Activate registration', () => {});
 
-  test('Forgot password', () => {});
+  // test('Forgot password', () => {});
 
-  test('Reset Password', () => {});
+  // test('Reset Password', () => {});
 
 });
