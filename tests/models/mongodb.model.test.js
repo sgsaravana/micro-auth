@@ -113,28 +113,28 @@ describe('MongoDB Model Functions', () => {
     done();
   });
 
-  // test('Get user by different keys should return the right record', async done => {
-  //   // const uuid = uuidv1();
-  //   // const user = {
-  //   //   firstname: 'Dominic',
-  //   //   lastname: 'Toretto',
-  //   //   email: 'dtoretto@gmail.com',
-  //   //   password: 'speedkills',
-  //   //   activation_code: uuidv1(),
-  //   //   uuid: uuid
-  //   // };
+  test('Get user by different keys should return the right record', async done => {
+    const uuid = uuidv1();
+    const user = {
+      firstname: 'Dominic',
+      lastname: 'Toretto',
+      email: 'dtoretto@gmail.com',
+      password: 'speedkills',
+      activation_code: uuidv1(),
+      uuid: uuid
+    };
 
-  //   // const result = await model.create(user);
-  //   // expect(result).not.toBe(undefined);
-  //   // expect(result.success).toBe(true);
+    const result = await model.create(user);
+    expect(result).not.toBe(undefined);
+    expect(result.success).toBe(true);
 
-  //   // const res1 = await model.getUserByKey('uuid', uuid);
-  //   // expect(res1).not.toBe(undefined);
-  //   // expect(res1.success).toBe(true);
-  //   // expect(res1.user.email).toBe(user.email);
+    const res1 = await model.getUserByKey('uuid', uuid);
+    expect(res1).not.toBe(undefined);
+    expect(res1.success).toBe(true);
+    expect(res1.user.email).toBe(user.email);
 
-  //   done();
-  // });
+    done();
+  });
 
 });
 
