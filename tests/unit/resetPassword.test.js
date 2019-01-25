@@ -13,7 +13,7 @@ describe('Reset password test', () => {
           return { success: true, user: {} };
         }
         else if (value == "wrongResetCode"){
-          return { success: false };
+          return { success: true, user: null };
         }
         else {
           return { success: true };

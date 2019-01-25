@@ -13,7 +13,7 @@ describe('Forgot password module', () => {
           return { success: true, user: {} };
         }
         else if (value == "wrongemail@gmail.com"){
-          return { success: false };
+          return { success: true, user: null };
         }
         else {
           return { success: true };

@@ -8,7 +8,7 @@ describe('Activate module test', () => {
   beforeAll(async () => {
     db.getUser = jest.fn().mockImplementation(async (key, code) => {
       if(key == 'activationCode' && code == 'wrong-code') {
-        return { success: false }
+        return { success: true, user: null }
       }
       else {
         return { success: true, user: {} }
@@ -26,6 +26,7 @@ describe('Activate module test', () => {
       const actResult = await activation.activate('wrong-code');
       expect(actResult).not.toBe(undefined);
       expect(actResult.success).toBe(false);
+      expect(actResult.error.code).toBe(300);
     });
 
     test('Activeting user with correct code should succeed', async () => {

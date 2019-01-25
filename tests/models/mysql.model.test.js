@@ -155,4 +155,12 @@ describe('Test MySQL Model Functions', () => {
     done();
   });
 
+  test('Get user who does not exist should return empty', async done => {
+    const uuid = uuidv1();
+    const res1 = await model.getUserByKey('uuid', uuid);
+    expect(res1).not.toBe(undefined);
+    expect(res1.success).toBe(true);
+    done();
+  });
+
 });

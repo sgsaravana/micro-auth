@@ -29,11 +29,11 @@ const getUser = async (field, value) => {
 
   // Get user by key
   const record = await model.getUserByKey(field, value);
-  if(record.success && record.user) {
+  if(record.success) {
     return record;
   }
   else {
-    return { success: false, error: { code: 320, message: logger.getErrorMessage(320) } };
+    return { success: false, error: { code: 323, message: logger.getErrorMessage(323) } };
   }
 }
 
@@ -50,12 +50,17 @@ const doUpdate = async (uuid, params) => {
 
   // Check for user with code
   const record = await model.getUserByKey('uuid', uuid);
-  if(record.success && record.user) {
-    const result = await model.update(record.user.uuid, params);
-    return result;
+  if(record.success) {
+    if(record.user) {
+      const result = await model.update(record.user.uuid, params);
+      return result;
+    }
+    else {
+      return { success: false, error: { code: 320, message: logger.getErrorMessage(320) } };
+    }
   }
   else {
-    return { success: false, error: { code: 320, message: logger.getErrorMessage(320) } };
+    return { success: false, error: { code: 323, message: logger.getErrorMessage(323) } };
   }
 }
 

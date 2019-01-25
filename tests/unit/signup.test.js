@@ -18,7 +18,7 @@ describe('Signup modules unit test', () => {
           return { success: true, user: {} };
         }
         else if (value == "anotherduplicateemail@gmail.com"){
-          return { success: false };
+          return { success: true, user: {} };
         }
         else {
           return { success: true };
@@ -96,7 +96,7 @@ describe('Signup modules unit test', () => {
       const result = await signup.register(params);
 
       expect(result.success).toBe(false);
-      expect(result.error.code).toBe(322);
+      expect(result.error.code).toBe(211);
       done();
     });
 
@@ -104,7 +104,8 @@ describe('Signup modules unit test', () => {
       // Register a new user with given parameters
       const params = { firstname: 'Saravana', email: 'saravana1@gmail.com', password: 'password' };
       const result = await signup.register(params);
-
+      console.log("result");
+      console.log(result);
       expect(result.success).toBe(true);
       expect(result.user.id).not.toBe(null);
       expect(result.user.activationCode).not.toBe(null);
@@ -114,7 +115,8 @@ describe('Signup modules unit test', () => {
     test('Registered user will be inactive', async done => {
       const params = { firstname: 'Saravana', email: 'sgravana@gmail.com', password: 'password' };
       const result = await signup.register(params);
-
+      console.log("result");
+      console.log(result);
       expect(result.success).toBe(true);
       expect(result.user.isActivated).toBe(false);
       done();
@@ -123,7 +125,8 @@ describe('Signup modules unit test', () => {
     test('Registering user will return a uuid as confirmation string for activation', async done => {
       const params = { firstname: 'Saravana', email: 'saravana@gmail.com', password: 'password' };
       const result = await signup.register(params);
-
+      console.log("result");
+      console.log(result);
       expect(result.success).toBe(true);
       expect(result.user.activationCode.length).toBeGreaterThan(0);
       expect(typeof result.user.activationCode).toBe(typeof 'string');

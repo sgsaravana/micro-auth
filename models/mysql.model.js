@@ -60,7 +60,7 @@ const getUserByKey = async (field, value) => {
       }
       else {
         // console.log("RESULT :: ", generateCamelCaseObj(result[0]));
-        resolve({ success: true, user: generateCamelCaseObj(result[0]) });
+        resolve({ success: true, user: result.length > 0 ? generateCamelCaseObj(result[0]) : null });
       }
     });
   });
