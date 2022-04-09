@@ -64,19 +64,32 @@ const register = async (params) => {
 
   // Check if user record exist
   const record = await db.getUser('email', params.email);
-  if(record.success && record.user) {
-    // User already exist. Return error message
-    return { success: false, error: { code: 211, message: logger.getErrorMessage(211) } };
+  console.log('RECORD :: ', record);
+  if(record.success) {
+    if(record.user) {
+      // User already exist. Return error message
+      return { success: false, error: { code: 211, message: logger.getErrorMessage(211) } };
+    }
+    else {
+      const createParams = await prepareParams(params);
+      const result       = await db.doRegister(createParams);
+      return result;
+    }
   }
+  else {
+    return record;
+  }
+  // if(!record.success && record.error.code != 320) {
+  //   return { success: false, error: { code: 322, message: logger.getErrorMessage(322) } };
+  // }
 
-  if(!record.success) {
-    return { success: false, error: { code: 322, message: logger.getErrorMessage(322) } };
-  }
-
-  if (!errors && record.success && !record.user) {
-    // No validation errors
-    return db.doRegister(await prepareParams(params));
-  }
+  // console.log('CREATING :: ', params);
+  // if (!errors && !record.success && record.error.code === 320 && !record.user) {
+  //   // No validation errors
+  //   const createParams = await prepareParams(params);
+  //   const result       = await db.doRegister(createParams);
+  //   return result;
+  // }
 }
 
 module.exports = { register }

@@ -30,11 +30,13 @@ const checkAndCreateDatabase = async () => {
     password: password || ""
   });
 
-  const result = await checkConnection(connection);
-  if (result && !result.success) {
-    console.log("Error with database check: ", port, result);
-    return { success: false };
-  }
+  checkConnection(connection)
+    .then(result => {
+      if (result && !result.success) {
+        console.log("Error with database check: ", port, result);
+        return { success: false };
+      }
+    });
 
   return new Promise(resolve => {
     console.log("Creating database...");
@@ -71,14 +73,16 @@ const init = async (conf) => {
   database = config.database;
   pool     = config.pool;
 
-  const checkDatabase = await checkAndCreateDatabase();
 
-  console.log("Result check database! ", checkDatabase);
-  if (checkDatabase && !checkDatabase.success) {
-    return { success: false };
-  }
+  return new Promise(async resolve => {
 
-  try {
+    checkAndCreateDatabase().then(checkDatabase => {
+      console.log("Result check database! ", checkDatabase);
+      if (checkDatabase && !checkDatabase.success) {
+        resolve({ success: false });
+      }
+    });
+
     const connectionPool = mysql.createPool({
       connectionLimit: pool,
       host:            host,
@@ -88,20 +92,20 @@ const init = async (conf) => {
       database:        database
     });
 
-    const checkSchema = await executeSchemaOperation(connectionPool);
+    executeSchemaOperation(connectionPool).then(checkSchema => {
+      if(checkSchema && !checkSchema.succes) {
+        resolve({ success: true, database: connectionPool });
+      }
+      else {
+        resolve({ succes: false });
+      }
+    });
 
-    if(checkSchema && !checkSchema.succes) {
-      return { success: true, database: connectionPool };
-    }
-    else {
-      return { succes: false }
-    }
-
-  }
-  catch (err) {
-    console.error("Error creating pool: ", err);
-    return { success: false, error: err };
-  }
+  });
+  // catch (err) {
+  //   console.error("Error creating pool: ", err);
+  //   return { success: false, error: err };
+  // }
 
 };
 

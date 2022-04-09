@@ -1,11 +1,17 @@
 
-const express = require('express');
-const app = express();
+const express    = require('express');
+const bodyParser = require('body-parser');
+const app        = express();
+
+import apiV1 from './api/v1'
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
 // CREATE NEW USER
-// app.post('/register', apiV1.register);
+app.post('/register', apiV1.register);
 
 // UPDATE USER PARAMETERS
 // app.post('/user/:id', apiV1.update);

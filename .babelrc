@@ -1,5 +1,9 @@
 {
-    "presets": [
-        "env"
+    "presets": [["@babel/preset-env", { "targets": { "node": "current" } }]],
+    "plugins": ["@babel/syntax-dynamic-import"],
+    "ignore": [
+      "node_modules",
+      "test",
+      "coverage"
     ]
 }
